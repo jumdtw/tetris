@@ -1,8 +1,12 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
+
 #define FIELD_WIDTH 12
 #define FIELD_HEIGHT 22
+#define MINO_WIDTH 4
+#define MINO_HEIGHT 4
+
 
 enum MINO{
     MINO_T,
@@ -22,5 +26,6 @@ enum ANGLE{
     MINO_270,
     MINO_ALL_ANGLE,
 };
+
 
 #endif
