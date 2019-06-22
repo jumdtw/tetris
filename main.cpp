@@ -193,7 +193,7 @@ void Print_field(){
             if(display_field[i][k]==1){
                 cout << "O ";
             }else{
-                cout << "  ";
+                cout << ". ";
             }
         }
         cout << "\n";
@@ -215,7 +215,32 @@ void update(){
     Print_field();
 }
 
+void castline(int y){
+
+}
+
+void deleteline(int y){
+    for(int i=1;i<FIELD_WIDTH-1;i++){
+        static_field[y][i] = 0;
+    }
+}
+
 void checkline(){
+    bool flag = true;
+    int y = 0;
+    for(int i=1;i<FIELD_HEIGHT-1;i++){
+        y = i;
+        for(int k=1;k<FIELD_WIDTH-1;k++){
+            if(static_field[i][k]==0){
+                flag = false;
+            }
+        }
+        if(flag){
+            deleteline(y);
+        }else{
+            flag = true;
+        }
+    }
     
 }
 
