@@ -12,7 +12,7 @@ char display_field[FIELD_HEIGHT][FIELD_WIDTH];
 //すべてのミノが４つのブロックで構成されていることを利用する。
 
 
-int minoX=5,minoY=5,minoAngle=0;
+int minoX=5,minoY=0,minoAngle=0,minotype=4;
 char mino[MINO_NUM][MINO_ALL_ANGLE][MINO_HEIGHT][MINO_WIDTH] ={
         // t mino 0
         0,0,0,0,
@@ -184,14 +184,14 @@ void Print_field(){
     // mino print 
     for(int i=0;i<MINO_HEIGHT;i++){
         for(int k=0;k<MINO_WIDTH;k++){
-            display_field[minoY+i][minoX+k] = mino[MINO_I][MINO_0+minoAngle][i][k];
+            display_field[minoY+i][minoX+k] |= mino[minotype][minoAngle][i][k];
         }
     }
     //display print     
     for(int i=0;i<FIELD_HEIGHT;i++){
         for(int k=0;k<FIELD_WIDTH;k++){
             if(display_field[i][k]==1){
-                cout << "W ";
+                cout << "O ";
             }else{
                 cout << "  ";
             }
@@ -200,46 +200,95 @@ void Print_field(){
     }
 }
 
+bool hitcheck(int minoX,int minoY,int minotype,int minoangle){
+    for(int i=0;i<MINO_HEIGHT;i++){
+        for(int k=0;k<MINO_WIDTH;k++){
+            if(mino[minotype][minoangle][i][k]&&static_field[minoY+i][minoX+k]){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void update(){
     Print_field();
 }
 
+void checkline(){
+    
+}
+
 int main(){
     char ch;
+    int buftime = 0,keytime=1000;
     init_field();
     for(;;){
         if(kbhit()!=0){
             switch(ch=getch()){
+                
                 //hard drop
                 case 'i':
                     break;
-                //反時計回転
+                //左移動
                 case 'j':
-                    minoAngle--;
-                    if(minoAngle<0){minoAngle=3;}
+                    if(hitcheck(minoX-1,minoY,minotype,minoAngle)){
+                        minoX--;
+                    }
                     break;
                 //下移動
                 case 'k':
-                    minoY++;
+                    if(hitcheck(minoX,minoY+1,minotype,minoAngle)){
+                        minoY++;
+                    }
                     break;
-                //時計回転
+                //右移動
                 case 'l':
-                    minoAngle++;
-                    if(minoAngle>3){minoAngle=0;}
+                    if(hitcheck(minoX+1,minoY,minotype,minoAngle)){
+                        minoX++;
+                    }
                     break;
+                //反時計回り
                 case 'a':
-                    minoX--;
-                    if(minoX<1){minoX=1;}
+                    if(hitcheck(minoX,minoY,minotype,minoAngle-1)){
+                        minoAngle--;
+                        if(minoAngle<0){minoAngle=3;}
+                    }
                     break;
+                //時計回り
                 case 'd':
-                    minoX++;
-                    if(minoX>FIELD_WIDTH-1){minoX=FIELD_WIDTH-1;}
+                    if(hitcheck(minoX,minoY,minotype,minoAngle+1)){
+                        minoAngle++;
+                        if(minoAngle>3){minoAngle=0;}
+                    }
+                    break;
             }
             if(ch=='D'){return 0;}
         }
         system("cls");
+        //drop mino with time
+        buftime += 1000/60;
+        if(buftime >= 100){
+            buftime = 0;
+            if(hitcheck(minoX,minoY+1,minotype,minoAngle)){
+                minoY++;
+            }else{
+                for(int i=0;i<MINO_HEIGHT;i++){
+                    for(int k=0;k<MINO_WIDTH;k++){
+                        static_field[minoY+i][minoX+k] |= mino[minotype][minoAngle][i][k];
+                    }
+                }
+                minotype += 1;
+                minoX = 5;
+                minoY = 0;
+                if(minotype>=MINO_NUM){
+                    minotype = 0;
+                }
+            }
+        }
+        checkline();
         update();
-        Sleep(1000);
+        Sleep(1000/60);
     }
     return 0;
 }
