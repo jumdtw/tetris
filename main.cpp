@@ -3,6 +3,8 @@
 #include<cstring>
 #include<string.h>
 #include<iostream>
+#include<random>
+#include<time.h>
 #include"main.hpp"
 
 using namespace std;
@@ -212,17 +214,25 @@ bool hitcheck(int minoX,int minoY,int minotype,int minoangle){
 }
 
 void update(){
+    cout << minoX << endl;
+    cout << minoY << endl;
+    cout << minotype << endl;
     Print_field();
 }
 
 void castline(int y){
-
+    for(int i=y;i>=0;i--){
+        for(int k=1;k<FIELD_WIDTH-1;k++){
+            static_field[i][k] = static_field[i-1][k];
+        }
+    }
 }
 
 void deleteline(int y){
     for(int i=1;i<FIELD_WIDTH-1;i++){
         static_field[y][i] = 0;
     }
+    castline(y);
 }
 
 void checkline(){
@@ -247,6 +257,7 @@ void checkline(){
 int main(){
     char ch;
     int buftime = 0,keytime=1000;
+    random_device rnd;
     init_field();
     for(;;){
         if(kbhit()!=0){
@@ -306,9 +317,7 @@ int main(){
                 minotype += 1;
                 minoX = 5;
                 minoY = 0;
-                if(minotype>=MINO_NUM){
-                    minotype = 0;
-                }
+                if(minotype>=MINO_NUM){minotype=0;}
             }
         }
         checkline();
