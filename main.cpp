@@ -214,15 +214,16 @@ bool hitcheck(int minoX,int minoY,int minotype,int minoangle){
 }
 
 void update(){
-    cout << minoX << endl;
-    cout << minoY << endl;
-    cout << minotype << endl;
     Print_field();
 }
 
 void castline(int y){
     for(int i=y;i>=0;i--){
         for(int k=1;k<FIELD_WIDTH-1;k++){
+            if(i==0){
+                static_field[i][k] = 0;
+                continue;
+            }
             static_field[i][k] = static_field[i-1][k];
         }
     }
@@ -238,7 +239,7 @@ void deleteline(int y){
 void checkline(){
     bool flag = true;
     int y = 0;
-    for(int i=1;i<FIELD_HEIGHT-1;i++){
+    for(int i=0;i<FIELD_HEIGHT-1;i++){
         y = i;
         for(int k=1;k<FIELD_WIDTH-1;k++){
             if(static_field[i][k]==0){
@@ -318,6 +319,7 @@ int main(){
                 minoX = 5;
                 minoY = 0;
                 if(minotype>=MINO_NUM){minotype=0;}
+                
             }
         }
         checkline();
