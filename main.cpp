@@ -2,6 +2,7 @@
 #include<windows.h>
 #include<cstring>
 #include<string.h>
+#include<string>
 #include<iostream>
 #include<random>
 #include<time.h>
@@ -189,17 +190,19 @@ void Print_field(){
             display_field[minoY+i][minoX+k] |= mino[minotype][minoAngle][i][k];
         }
     }
+    string buf;
     //display print     
     for(int i=0;i<FIELD_HEIGHT;i++){
         for(int k=0;k<FIELD_WIDTH;k++){
             if(display_field[i][k]==1){
-                cout << "O ";
+                buf += "O ";
             }else{
-                cout << ". ";
+                buf +=  ". ";
             }
         }
-        cout << "\n";
+        buf+= "\n";
     }
+    cout << buf;
 }
 
 bool hitcheck(int minoX,int minoY,int minotype,int minoangle){
