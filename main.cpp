@@ -167,6 +167,31 @@ char mino[MINO_NUM][MINO_ALL_ANGLE][MINO_HEIGHT][MINO_WIDTH] ={
            
     };
 
+char gameover_field[FIELD_HEIGHT][FIELD_WIDTH] = {
+    1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+    0,0,0,0,0,0,0,0,1,1,1,1,
+};
+
 void init_field(){
     memset(static_field,0,sizeof(static_field));
     for(int i=0;i<FIELD_HEIGHT;i++){
@@ -181,13 +206,15 @@ void init_field(){
 
 
 
-void Print_field(){
+void Print_field(bool flag){
     //display_field init 
     memcpy(*display_field,*static_field,FIELD_HEIGHT*FIELD_WIDTH);
     // mino print 
-    for(int i=0;i<MINO_HEIGHT;i++){
-        for(int k=0;k<MINO_WIDTH;k++){
-            display_field[minoY+i][minoX+k] |= mino[minotype][minoAngle][i][k];
+    if(flag){
+        for(int i=0;i<MINO_HEIGHT;i++){
+            for(int k=0;k<MINO_WIDTH;k++){
+                display_field[minoY+i][minoX+k] |= mino[minotype][minoAngle][i][k];
+            }
         }
     }
     string buf;
@@ -217,7 +244,7 @@ bool hitcheck(int minoX,int minoY,int minotype,int minoangle){
 }
 
 void update(){
-    Print_field();
+    Print_field(true);
 }
 
 void castline(int y){
@@ -256,6 +283,10 @@ void checkline(){
         }
     }
     
+}
+
+void gameover(){
+    memcpy(*static_field,*gameover_field,FIELD_HEIGHT*FIELD_WIDTH);
 }
 
 int main(){
@@ -322,12 +353,18 @@ int main(){
                 minoX = 5;
                 minoY = 0;
                 if(minotype>=MINO_NUM){minotype=0;}
-                
+                if(!hitcheck(minoX,minoY,minotype,minoAngle)){
+                    gameover();
+                    Print_field(false);
+                    Sleep(5000);
+                    init_field();
+                }
             }
         }
         checkline();
         update();
         Sleep(1000/60);
     }
+    
     return 0;
 }
